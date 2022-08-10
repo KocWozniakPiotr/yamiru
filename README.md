@@ -1,4 +1,4 @@
-# Yamiru. The mobile MMO turn based game.
+# Yamiru. The mobile turn based MMO game.
 
 ### current features:
 - authentication
