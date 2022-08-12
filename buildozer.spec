@@ -7,7 +7,7 @@ title = Yamiru
 package.name = yamiru
 
 # (str) Package domain (needed for android/ios packaging)
-package.domain = org.yamiru
+package.domain = org.kivy
 
 # (str) Source code where the main.py live
 source.dir = .
@@ -37,7 +37,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,jnius,plyer,idna,chardet
+requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,pyjnius,plyer==2.0.0,idna,chardet,android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -53,7 +53,7 @@ icon.filename = img/icon.png
 orientation = portrait
 
 # (list) List of service to declare
-#services = NAME:ENTRYPOINT_TO_PY,NAME2:ENTRYPOINT2_TO_PY
+services = Myservice:service.py:foreground:sticky
 
 #
 # OSX Specific
@@ -73,7 +73,7 @@ osx.kivy_version = 2.1.0
 #
 
 # (bool) Indicate if the application should be fullscreen or not
-fullscreen = 1
+fullscreen = 0
 
 # (string) Presplash background color (for android toolchain)
 # Supported formats are: #RRGGBB #AARRGGBB or one of the following names:
@@ -93,7 +93,7 @@ fullscreen = 1
 #icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
 
 # (list) Permissions
-android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, POST_NOTIFICATIONS
+android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, FOREGROUND_SERVICE, POST_NOTIFICATIONS, VIBRATE, BROADCAST_STICKY
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
@@ -297,7 +297,7 @@ android.allow_backup = True
 #p4a.fork = kivy
 
 # (str) python-for-android branch to use, defaults to master
-p4a.branch = develop
+p4a.branch = master
 
 # (str) python-for-android specific commit to use, defaults to HEAD, must be within p4a.branch
 #p4a.commit = HEAD

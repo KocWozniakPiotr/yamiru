@@ -11,7 +11,11 @@ from scripts import client
 kivy.require("2.1.0")
 
 if platform == 'android':
-    pass
+    from jnius import autoclass
+    service = autoclass('org.kivy.yamiru.ServiceMyservice')
+    mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+    argument = ''
+    service.start(mActivity, argument)
 else:
     Window.fullscreen = 0
     Window.size = 360, 640
@@ -29,8 +33,7 @@ class UILayout(Widget):
     saved_attrs = []
 
     def click_msg(self):
-        pass
-        notification.notify(title="Frajer News", message="not today xD", app_name="Yamiru")
+        notification.notify('Yamiru', 'lololol', app_name='Yamiru')
 
     def click_task(self):
         pass
