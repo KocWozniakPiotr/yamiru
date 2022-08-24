@@ -37,23 +37,22 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,pyjnius,plyer==2.0.0,idna,chardet,android
+requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,requests,pyjnius,plyer,idna,chardet,android
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = img/presplash.png
+presplash.filename = img/icon.png
 android.presplash_color=#001820
 # (str) Icon of the application
-icon.filename = img/icon.png
-
+# icon.filename = img/icon.png
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
 
 # (list) List of service to declare
-services = Myservice:service.py:foreground:sticky
+services = Synchronizing:service.py:foreground:sticky
 
 #
 # OSX Specific
@@ -89,20 +88,20 @@ fullscreen = 0
 #android.presplash_lottie = "path/to/lottie/file.json"
 
 # (str) Adaptive icon of the application (used if Android API level is 26+ at runtime)
-#icon.adaptive_foreground.filename = %(source.dir)s/data/icon_fg.png
-#icon.adaptive_background.filename = %(source.dir)s/data/icon_bg.png
+icon.adaptive_foreground.filename = %(source.dir)s/img/icon_alt.png
+icon.adaptive_background.filename = %(source.dir)s/img/icon_alt.png
 
 # (list) Permissions
-android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, FOREGROUND_SERVICE, POST_NOTIFICATIONS, VIBRATE, BROADCAST_STICKY
+android.permissions = INTERNET, WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, RECEIVE_BOOT_COMPLETED, POST_NOTIFICATIONS, VIBRATE, FOREGROUND_SERVICE, BROADCAST_STICKY
 
 # (list) features (adds uses-feature -tags to manifest)
 #android.features = android.hardware.usb.host
 
 # (int) Target Android API, should be as high as possible.
-android.api = 31
+android.api = 33
 
 # (int) Minimum API your APK / AAB will support.
-android.minapi = 21
+android.minapi = 26
 
 # (int) Android SDK version to use
 #android.sdk = 20

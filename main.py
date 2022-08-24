@@ -1,5 +1,4 @@
 import kivy
-from plyer import notification
 from random import random as r
 from kivy.utils import platform
 from kivy.app import App
@@ -8,14 +7,14 @@ from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from scripts import client
 
+
 kivy.require("2.1.0")
 
 if platform == 'android':
     from jnius import autoclass
-    service = autoclass('org.kivy.yamiru.ServiceMyservice')
+    service = autoclass('org.kivy.yamiru.ServiceSynchronizing')
     mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-    argument = ''
-    service.start(mActivity, argument)
+    service.start(mActivity, '')
 else:
     Window.fullscreen = 0
     Window.size = 360, 640
@@ -33,7 +32,7 @@ class UILayout(Widget):
     saved_attrs = []
 
     def click_msg(self):
-        notification.notify('Yamiru', 'lololol', app_name='Yamiru')
+        pass
 
     def click_task(self):
         pass
