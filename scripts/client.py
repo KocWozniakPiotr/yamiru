@@ -18,22 +18,6 @@ user_nick = ""
 user_secret = ""
 
 
-def read_user_profile():
-    global user_secret
-    f = open("../secretkey.mon", 'a+')
-    f.seek(0)
-    content = f.read()
-    if len(content) < 1:
-        # if secret doesn't exist yet, send value 'empty' to receive a new secret
-        usr.send('empty'.encode())
-        user_secret = usr.recv(256).decode()
-        # user_nick = "anon" + str(int(r() * 999999999))
-        f.write(user_secret)
-    else:
-        user_secret = content
-    f.close()
-
-
 def server_connect():
     global login_status, server_connected, usr, usr_wrapped
     time.sleep(1)
@@ -60,8 +44,7 @@ def server_connect():
         server_connected = True
         login_status = 'looking for updates...'
         check_updates()
-        read_user_profile()
-        if send_pass(user_secret):
+        if send_key():
             t_spoof_packets = Thread(target=start_spoofing_packets, args=(usr,))
             t_spoof_packets.start()
             t_send_online_status = Thread(target=send_online_status, args=(usr,))
@@ -74,18 +57,34 @@ def server_connect():
 t_server_connect = Thread(target=server_connect)
 
 
-def send_pass(secret):
-    global wait_for_approval, login_status
+def send_key():
+    global wait_for_approval, login_status, user_secret
     if server_connected:
         if not wait_for_approval:
             wait_for_approval = True
-            credentials = secret
             try:
-                usr.send(credentials.encode())
+                f = open("../secretkey.mon", 'a+')
+                f.seek(0)
+                content = f.read()
+                if len(content) < 1:
+                    login_status = 'creating your secret...'
+                    # if secret doesn't exist yet, send value 'empty' to receive a new secret
+                    usr.send('empty'.encode())
+                    user_secret = usr.recv(256).decode()
+                    # user_nick = "anon" + str(int())
+                    f.write(user_secret)
+                    f.close()
+                    login_status = 'creation successful!'
+                    return True
+                else:
+                    user_secret = content
+                    f.close()
+
+                usr.send(user_secret.encode())
                 user = usr.recv(256).decode()
                 wait_for_approval = False
                 if user == 'entering':
-                    login_status = 'greetings!'
+                    # login_status = 'greetings!'
                     return True
                 elif user == 'tries':
                     login_status = 'incorrect credentials.'
@@ -97,8 +96,12 @@ def send_pass(secret):
                     login_status = '...already banned! You have to wait 1 hour'
                     return False
                 elif user == 'in-game':
-                    login_status = 'the account already logged in, wait few seconds for log out'
+                    login_status = 'the account already logged in, wait few seconds'
                     return False
+                elif user == 'unlocking-fail':
+                    login_status = 'your secret seems corrupted!'
+                    return False
+
             except socket.error:
                 login_status = 'connection failed, try again.'
                 return False
