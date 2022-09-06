@@ -2,18 +2,19 @@ from datetime import datetime
 import png
 from cryptography.fernet import Fernet
 
-pic_string = []
-pic_bump = 8
+# This will be generated on the server side !
 key = Fernet.generate_key()
 f = Fernet(key)
 d = bytes(str(datetime.now()), encoding='utf8')
 secret = f.encrypt(d)
-print(secret)
+
+pic_string = []
+pic_bump = 8
 range_x, range_y = 0, 0
 _values = [1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]
 
 
-def encrypt(noise):
+def encrypt_backup(noise):
     global pic_string
     noisy_arr = []
     _char = ''
@@ -46,7 +47,7 @@ def make_binary(_s):
             c = ''
     c = c + (40 - len(c)) * '0'
     pic_string.append(c)
-    encrypt(str(noise))
+    encrypt_backup(str(noise))
 
 
 def grow_image(pic, size):
@@ -67,7 +68,7 @@ def grow_image(pic, size):
     return new_pic, x, y
 
 
-def save_secret():
+def save_secret_backup():
     global pic_string
     pic_string, res_x, res_y = grow_image(pic_string, pic_bump)
     pic_string = [[int(c) for c in row] for row in pic_string]
@@ -90,7 +91,7 @@ def clean_secret(_key):
     return temp
 
 
-def recover_secret():
+def recover_secret_from_backup():
     r = png.Reader('../backup_data.png')
     _tup = r.read_flat()
     arr = _tup[2]
@@ -141,6 +142,6 @@ def recover_secret():
     print(clean_secret(_key_from_pic))
 
 
-make_binary(secret)
-save_secret()
-# recover_secret()
+# make_binary(secret)
+# save_secret_backup()
+# recover_secret_from_backup()
