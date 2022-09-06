@@ -6,8 +6,8 @@ import socket
 import ssl
 
 # Restarts the service as soon as the script ends.
-# PythonService = autoclass('org.kivy.android.PythonService')
-# PythonService.mService.setAutoRestartService(True)
+PythonService = autoclass('org.kivy.android.PythonService')
+PythonService.mService.setAutoRestartService(True)
 
 # Storing temporary ids of messages in array. They are indexed as templates in a dictionary
 msg_storage = []
