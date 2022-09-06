@@ -45,14 +45,14 @@ requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,requests,pyjniu
 
 # (str) Presplash of the application
 presplash.filename = img/icon.png
-android.presplash_color=#001820
+android.presplash_color=#FFFFFF
 # (str) Icon of the application
-# icon.filename = img/icon.png
+# icon.filename = img/icon_alt.png
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
 orientation = portrait
 
 # (list) List of service to declare
-services = Synchronizing:service.py:foreground:sticky
+services = Syncing:service.py:foreground:sticky
 
 #
 # OSX Specific

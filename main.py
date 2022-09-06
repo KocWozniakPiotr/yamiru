@@ -7,14 +7,15 @@ from kivy.core.window import Window
 from kivy.uix.widget import Widget
 from scripts import client
 
-
 kivy.require("2.1.0")
 
 if platform == 'android':
     from jnius import autoclass
-    service = autoclass('org.kivy.yamiru.ServiceSynchronizing')
+
+    service = autoclass('org.kivy.yamiru.ServiceSyncing')
     mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
     service.start(mActivity, '')
+    pass
 else:
     Window.fullscreen = 0
     Window.size = 360, 640
@@ -24,6 +25,8 @@ displayW = displaySize[0]
 displayH = displaySize[1]
 temp_status = ""
 chat_len = 0
+chat_content = 16
+first_msg = True
 
 
 class UILayout(Widget):
@@ -71,13 +74,21 @@ class MainGame(Widget):
         Clock.schedule_interval(self.update, 0.01)
 
     def update(self, _):
-        global temp_status, chat_len
+        global temp_status, chat_len, chat_content, first_msg
         if temp_status != client.login_status:
             temp_status = client.login_status
             self.app.root.ids.content.text += '\n' + '        ' + temp_status
         if chat_len < len(client.chat_list):
             chat_len = len(client.chat_list)
-            self.app.root.ids.content.text += '\n' + '        ' + client.chat_list[0]
+            if chat_content > 15 or first_msg:
+                self.app.root.ids.content.text += '\n' + '        ' + client.chat_list[0]
+                if first_msg:
+                    first_msg = False
+                else:
+                    chat_content = 0
+            else:
+                self.app.root.ids.content.text += client.chat_list[0]
+            chat_content += 1
         # self.update_ground(8, 8, displayW / 2, self.center_display_y, self.scaling)
 
     def gen_ground(self, _width, _height, *largs):

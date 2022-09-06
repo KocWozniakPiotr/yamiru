@@ -19,7 +19,7 @@ def update_chat(message):
     if '#' in words[0]:  # if announcement or command message
         words[0] = ''
         words.pop(0)
-        header = '# '
+        header = ''  # default should be '# ' for announcements
     elif len(nickname) > 0:  # if current player message
         if nickname in words[0]:
             header = ' '
