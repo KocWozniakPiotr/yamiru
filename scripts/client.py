@@ -80,6 +80,7 @@ def send_key():
                     user_secret = content
                     f.close()
 
+                login_status = 'trying to login with your secret...'
                 usr.send(user_secret.encode())
                 user = usr.recv(256).decode()
                 wait_for_approval = False
@@ -120,7 +121,5 @@ def check_updates():
         else:
             login_status = 'no new updates found'
         server_version = int(latest_version)
-        time.sleep(1)
-        login_status = 'trying to login with your secret'
     except socket.error:
         login_status = '''couldn't retrieve data from server'''

@@ -19,7 +19,7 @@ def update_chat(message):
     if '#' in words[0]:  # if announcement or command message
         words[0] = ''
         words.pop(0)
-        header = ''  # default should be '# ' for announcements
+        header = '# '
     elif len(nickname) > 0:  # if current player message
         if nickname in words[0]:
             header = ' '
@@ -42,7 +42,7 @@ def translate(packet):
         header = packet[0]
         content = packet[1:]
         if header == '0':
-            update_chat('+')
+            update_chat('- ')
             # Signal from server. checking if player is still online. Otherwise, server will send user offline
         if header == 'c':  # CHAT
             update_chat(content)

@@ -6,9 +6,9 @@
 - logging online
 - banning system
 - storing session
+- game notifications
 - generating local backup of your profile
 
 ### coming soon:
-- game notifications
 - game engine
 - read/write player data to the sever
