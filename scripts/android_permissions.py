@@ -1,8 +1,23 @@
+import time
+
+from kivy.clock import Clock
 from kivy.utils import platform
 if platform == 'android':
-    from kivy.clock import Clock
-    from android.permissions import request_permissions, check_permission, \
-        Permission
+    from android.permissions import Permission, request_permissions, check_permission
+
+
+    def check_permissions(perms):
+        for perm in perms:
+            if not check_permission(perm):
+                return False
+        return True
+
+
+    def ask_for_permission():
+        perms = [Permission.WRITE_EXTERNAL_STORAGE, Permission.READ_EXTERNAL_STORAGE]
+
+        if not check_permissions(perms):
+            request_permissions(perms)  # get android permissions
 
 
 class AndroidPermissions:
