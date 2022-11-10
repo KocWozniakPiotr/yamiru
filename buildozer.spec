@@ -13,7 +13,7 @@ package.domain = org.kivy
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,wav
+source.include_exts = py,png,jpg,kv,atlas,wav,ogg,zip,ini,ttf
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -22,7 +22,7 @@ source.include_exts = py,png,jpg,kv,atlas,wav
 #source.exclude_exts = spec
 
 # (list) List of directory to exclude (let empty to not exclude anything)
-#source.exclude_dirs = tests, bin, venv
+#source.exclude_dirs = tests, bin, venv, buildozer, opt
 
 # (list) List of exclusions using pattern matching
 # Do not prefix with './'
@@ -37,15 +37,15 @@ version = 0.1
 
 # (list) Application requirements
 # comma separated e.g. requirements = sqlite3,kivy
-requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,requests,pyjnius,plyer,idna,chardet,android
+requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,requests,pyjnius,plyer,idna,chardet,android,cryptography,png,pypng
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
 # requirements.source.kivy = ../../kivy
 
 # (str) Presplash of the application
-presplash.filename = img/icon.png
-android.presplash_color=#FFFFFF
+presplash.filename = img/splash_final.png
+android.presplash_color=#0c0420
 # (str) Icon of the application
 # icon.filename = img/icon_alt.png
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
@@ -72,7 +72,7 @@ osx.kivy_version = 2.1.0
 #
 
 # (bool) Indicate if the application should be fullscreen or not
-fullscreen = 0
+fullscreen = 1
 
 # (string) Presplash background color (for android toolchain)
 # Supported formats are: #RRGGBB #AARRGGBB or one of the following names:
