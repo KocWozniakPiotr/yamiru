@@ -1,36 +1,12 @@
-from datetime import datetime
 import png
 from cryptography.fernet import Fernet
-
-# This will be generated on the server side !
-key = Fernet.generate_key()
-f = Fernet(key)
-d = bytes(str(datetime.now()), encoding='utf8')
-secret = f.encrypt(d)
+from kivy.core.image import Image
+# this fernet key is used only to encrypt client secret locally for backups
+f = Fernet(b'iCtOF6HiDXREyjRFhsPws-x3-E6LUsYpESuoHWG0TkA=')
 
 pic_string = []
 pic_bump = 8
 range_x, range_y = 0, 0
-_values = [1, 1, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1]
-
-
-def encrypt_backup(noise):
-    global pic_string
-    noisy_arr = []
-    _char = ''
-    i = 0
-    for x in pic_string:
-        for y in x:
-            if i > 8:
-                i = 0
-            if _values[int(noise[i])*2] != 0:
-                _char += str(_values[int(noise[i])])
-            else:
-                _char += str(y)
-            i += 1
-        noisy_arr.append(_char)
-        _char = ''
-    pic_string = noisy_arr
 
 
 def make_binary(_s):
@@ -47,7 +23,7 @@ def make_binary(_s):
             c = ''
     c = c + (40 - len(c)) * '0'
     pic_string.append(c)
-    encrypt_backup(str(noise))
+    # distort pic_string wit some kind of noise here
 
 
 def grow_image(pic, size):
@@ -68,15 +44,18 @@ def grow_image(pic, size):
     return new_pic, x, y
 
 
-def save_secret_backup():
+def save_secret_backup(path):
     global pic_string
     pic_string, res_x, res_y = grow_image(pic_string, pic_bump)
     pic_string = [[int(c) for c in row] for row in pic_string]
 
     w = png.Writer(res_x, res_y, greyscale=True, bitdepth=1, y_pixels_per_unit=32, x_pixels_per_unit=32)
-    file = open('../backup_data.png', 'wb')
+    # file = open('../backup_data.png', 'wb')
+    final_dir = path + 'ASYLLION_PROFILE_BACKUP' + '.png'
+    file = open(final_dir, 'wb')
     w.write(file, pic_string)
     file.close()
+    return final_dir
 
 
 def clean_secret(_key):
@@ -91,8 +70,17 @@ def clean_secret(_key):
     return temp
 
 
-def recover_secret_from_backup():
-    r = png.Reader('../backup_data.png')
+def recover_secret_from_backup(path):
+    waiting = True
+    r = None
+    while waiting:
+        try:
+            file = open(path + 'ASYLLION_PROFILE_BACKUP.png', 'rb')
+            r = png.Reader(file)
+            waiting = False
+        except:
+            waiting = True
+    r.read()
     _tup = r.read_flat()
     arr = _tup[2]
     temp_arr = []
@@ -139,9 +127,20 @@ def recover_secret_from_backup():
         n += 1
     ################################################
     _key_from_pic = ''.join([chr(int(x, 2)) for x in b])
-    print(clean_secret(_key_from_pic))
+    print(_key_from_pic)
+    print(_key_from_pic[2:142])
+    # WTF ?!?!?! DIFFERENT LENGHT OF CHAIN ?!
+    final_encrypted = f.decrypt(bytes(clean_secret(_key_from_pic[2:142]).encode()))
+    return str(final_encrypted)[1:].replace("'", '')
 
 
-# make_binary(secret)
-# save_secret_backup()
-# recover_secret_from_backup()
+##########################################################################################################
+
+
+def do_backup(user_profile, path):
+    # this string is pulled from the settings in order to make a local backup
+    secret = f.encrypt(bytes(user_profile, encoding='utf8'))
+    make_binary(secret)
+    return save_secret_backup(path)
+
+# print(recover_secret_from_backup('../'))
