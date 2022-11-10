@@ -1,0 +1,81 @@
+#:kivy 2.1.0
+#: import utils kivy.utils
+
+#:set red_light '#990842'
+#:set red_dark '#560840'
+
+#:set violet_light '#1d0842'
+#:set violet_dark '#290840'
+
+#:set purple_light '#0c0420'
+#:set purple_dark '#0c061c'
+
+
+<Button>
+    size_hint: (None, None)
+    background_color: utils.get_color_from_hex(violet_light)
+    background_down: violet_light
+    font_name: 'misc/pixel_type.ttf'
+    font_size: 0.45 * self.height
+    color: red_light
+
+
+<Label>
+    size_hint: (None, None)
+    font_name: 'misc/pixel_type.ttf'
+    color: red_light
+
+
+WindowManager:
+    GameLoader:
+    Update:
+    Game:
+
+
+<GameLoader>:
+    name: "game_loader"
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (None, None)
+        size: root.xx, root.yy
+        canvas.before:
+            Color:
+                rgba: utils.get_color_from_hex(purple_light)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Image:
+            id: dupa
+            source: 'img/loading/0.png'
+            size_hint: (None, None)
+            keep_ratio: True
+            allow_stretch: True
+            width: root.xx
+            height: root.yy
+
+<Update>:
+    name: "update"
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (None, None)
+        size: root.xx, root.yy
+        canvas.before:
+            Color:
+                rgba: utils.get_color_from_hex(red_light)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+<Game>:
+    name: "game"
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (None, None)
+        size: root.xx, root.yy
+        canvas.before:
+            Color:
+                rgba: utils.get_color_from_hex(violet_dark)
+            Rectangle:
+                pos: self.pos
+                size: self.size
