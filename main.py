@@ -1,24 +1,35 @@
+import webbrowser
 from threading import Thread
 import kivy
+from kivy._event import partial
 from kivy.clock import Clock
 from kivy.core.audio import SoundLoader
 from kivy.lang import Builder
 from kivy.properties import StringProperty
+from kivy.uix.button import Button
 from kivy.utils import platform
 from kivy.app import App
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition, SlideTransition, NoTransition
-import startup
+from scripts import client
+from startup import ConfigManager
+from scripts.client import ClientConnection
 
 kivy.require("2.1.0")
 if platform != 'android':
-    Window.size = 360, 740
+    display_x, display_y = 1920, 1080
+    _x, _y = 400, 800
+    Window.size = _x, _y
+    Window.left = (display_x / 2) - (_x / 2)
+    Window.top = display_y / 8
 else:
-    Window.maximize()
-displaySize = Window.system_size
-displayW = displaySize[0]
-displayH = displaySize[1]
-intro_screen = False
+    from kvdroid.tools.metrics import Metrics
+
+    screen = Metrics()
+    _x = int(screen.resolution()[5:])
+    _y = int(screen.resolution()[:4])
+
+in_game = False
 
 
 # INTRO LAYOUT
@@ -26,13 +37,13 @@ intro_screen = False
 
 
 class Loader(Screen):
-    xx = displayW
-    yy = displayH
+    xx = _x
+    yy = _y
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.loading_frame = 0
-        self.loading_max = 5
+        self.loading_max = 10
         self.sound_intro = None
         self.click = None
         self.pop_click = None
@@ -44,25 +55,30 @@ class Loader(Screen):
             # default timeout 0
             Clock.schedule_once(self.progress_check, 0)
         except:
-            print('wtf')
+            pass
         finally:
             # default timeout 0.08
             Clock.schedule_interval(self.progress_check, 0.08)
-            pass  # Clock.schedule_interval(self.progress_check, 0.08)
 
     def progress_check(self, dt):
-        # placing bigger files like 1.5-2MB ath the first 1-2 frames of loading will glitch with fullscreen
+        # placing bigger files like 1.5-2MB ath the first 0-2 frames of loading will glitch/freeze full-screen
         # FOR THE MOST PART JUST AVOID PUTTING ANYTHING INSIDE FIRST FRAME !!!
         if self.loading_frame <= self.loading_max:
             if self.loading_frame == 2:
+                if platform == 'android':
+                    from kvdroid.tools import immersive_mode
+                    _t = Thread(target=immersive_mode)
+                    _t.start()
+                # change_statusbar_color("#0C0420", "white")
+                # navbar_color("#0C0420")
                 self.sound_intro = SoundLoader.load('sfx/intro.ogg')
                 self.click = SoundLoader.load('sfx/click.ogg')
                 self.pop_click = SoundLoader.load('sfx/pop_click.ogg')
-            elif self.loading_frame == 3:
+            elif self.loading_frame == 8:
                 self.manager.get_screen("creation").ids.kitty.source = 'img/code.zip'
-            elif self.loading_frame == 4:
+            elif self.loading_frame == 9:
                 self.manager.get_screen("setup").ids.logo.source = 'img/lol.zip'
-            elif self.loading_frame == 5:
+            elif self.loading_frame == 10:
                 self.manager.get_screen("restore").ids.doggy.source = 'img/code2.zip'
 
             self.manager.get_screen("loader").ids.dupa.source = f'img/loading/{self.loading_frame}.png'
@@ -72,21 +88,27 @@ class Loader(Screen):
                 self.sound_intro.loop = True
                 self.sound_intro.volume = 0.3
                 self.sound_intro.play()
-            self.manager.transition = FadeTransition()
-            self.manager.current = 'setup'
-            self.manager.transition = SlideTransition()
+            if in_game:
+                self.manager.transition = FadeTransition()
+                self.manager.current = 'game'
+                self.manager.get_screen('game').connect_me()
+            else:
+                self.manager.transition = FadeTransition()
+                self.manager.current = 'setup'
+                self.manager.transition = SlideTransition()
             Clock.unschedule(self.progress_check)
 
 
 class SetupWindow(Screen):
-    xx = displayW
-    yy = displayH
+    xx = _x
+    yy = _y
     _output = StringProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
     def new_player_btn(self):
+        _displaySize = Window.system_size
         # client.t_server_connect.start()
         if platform == 'android':
             self.manager.get_screen('loader').click.play()
@@ -97,8 +119,8 @@ class SetupWindow(Screen):
 
 
 class CreationWindow(Screen):
-    xx = displayW
-    yy = displayH
+    xx = _x
+    yy = _y
     _output = StringProperty()
 
     def __init__(self, **kwargs):
@@ -114,13 +136,15 @@ class CreationWindow(Screen):
             self.manager.get_screen('creation').ids.deny_id.active = True
         if platform == 'android': self.manager.get_screen('loader').pop_click.play()
 
-    def create_backup_btn(self):
+    def create_account_btn(self):
         if platform == 'android':
             self.manager.get_screen('loader').click.play()
-            if self.manager.get_screen('creation').ids.allow_id.active:
-                self._output = 'starting backup...'
-            else:
-                self._output = 'skipping backup, creating account...'
+        if self.manager.get_screen('creation').ids.allow_id.active:
+            self.manager.transition = FadeTransition()
+            self.manager.current = 'game'
+            self.manager.get_screen('game').connect_me()
+        else:
+            self._output = 'not  available'
 
     def back_btn(self):
         if platform == 'android':
@@ -128,8 +152,8 @@ class CreationWindow(Screen):
 
 
 class RestoreWindow(Screen):
-    xx = displayW
-    yy = displayH
+    xx = _x
+    yy = _y
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -144,119 +168,58 @@ class RestoreWindow(Screen):
             self.manager.get_screen('loader').click.play()
 
 
-# GAME LAYOUT
-########################################
-
-
-class GameLoader(Screen):
-    xx = displayW
-    yy = displayH
+class Game(Screen):
+    xx = _x
+    yy = _y
+    _output = StringProperty()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.loading_frame = 0
-        self.loading_max = 5
-        self.click = None
-        self._t = Thread(target=self.run_scheduler)
-        self._t.start()
+        self.cc = ClientConnection()
+        self.button_exist = False
 
-    def run_scheduler(self):
-        try:
-            # default timeout 0
-            Clock.schedule_once(self.progress_check, 0)
-        except:
-            print('wtf')
-        finally:
-            # default timeout 0.08
-            Clock.schedule_interval(self.progress_check, 0.08)
-            pass  # Clock.schedule_interval(self.progress_check, 0.08)
+    def connect_me(self):
+        Clock.schedule_interval(self.update_status, 0.08)
+        _t = Thread(target=self.cc.server_connect)
+        _t.start()
 
-    def progress_check(self, dt):
-        # placing bigger files like 1.5-2MB ath the first 1-2 frames of loading will glitch with fullscreen
-        # FOR THE MOST PART JUST AVOID PUTTING ANYTHING INSIDE FIRST FRAME !!!
-        if self.loading_frame <= self.loading_max:
-            if self.loading_frame == 2:
-                self.click = SoundLoader.load('sfx/click.ogg')
-            elif self.loading_frame == 3:
-                pass
-            elif self.loading_frame == 4:
-                pass
-            elif self.loading_frame == 5:
-                pass
-
-            self.manager.get_screen("game_loader").ids.dupa.source = f'img/loading/{self.loading_frame}.png'
-            self.loading_frame += 1
-        else:
-            self.manager.transition = FadeTransition()
-            self.manager.current = 'update'
-            self.manager.transition = SlideTransition()
-            Clock.unschedule(self.progress_check)
-
-
-class Update(Screen):
-    xx = displayW
-    yy = displayH
-
-
-class Game(Screen):
-    xx = displayW
-    yy = displayH
-
-
-########################################
+    def update_status(self, dt):
+        self._output = self.cc.server_status
+        if self.cc.update_available and not self.button_exist:
+            update_btn = Button()
+            update_btn.text = 'update available'
+            update_btn.size = self.xx, self.yy / 12
+            update_btn.on_press = lambda: webbrowser.open('https://asyllion.com')
+            self.manager.get_screen('game').add_widget(update_btn)
+            self.button_exist = True
 
 
 class WindowManager(ScreenManager):
     pass
 
 
-if startup.config_active():
-    Builder.load_file('game_section.kv')
-    intro_screen = False
-else:
-    Builder.load_file('loading_section.kv')
-    intro_screen = True
+cfg = ConfigManager()
+if cfg.active():
+    in_game = True
 
-if platform != 'android':
-    # Builder.load_file('game_section.kv')
-    # intro_screen = False
-    pass
+Builder.load_file('loading_section.kv')
 
 
 class MainApp(App):
 
     def build(self):
-        self.sm = ScreenManager(transition=NoTransition())
-        if intro_screen:
-            fake_screen = Screen(name='fake_screen')
-            self.sm.add_widget(fake_screen)
-            loader = Loader()
-            self.sm.add_widget(loader)
-            setup = SetupWindow()
-            self.sm.add_widget(setup)
-            creation = CreationWindow()
-            self.sm.add_widget(creation)
-            restore = RestoreWindow()
-            self.sm.add_widget(restore)
-            Clock.schedule_once(self.switch_to_loader)
-        else:
-            fake_screen = Screen(name='fake_screen')
-            fake_screen.canvas.clear()
-            self.sm.add_widget(fake_screen)
-            game_loader = GameLoader()
-            self.sm.add_widget(game_loader)
-            update = Update()
-            self.sm.add_widget(update)
-            game = Game()
-            self.sm.add_widget(game)
-            Clock.schedule_once(self.switch_to_loader)
-        return self.sm
-
-    def switch_to_loader(self, *args):
-        if intro_screen:
-            self.sm.current = 'loader'
-        else:
-            self.sm.current = 'game_loader'
+        sm = ScreenManager(transition=NoTransition())
+        loader = Loader()
+        sm.add_widget(loader)
+        setup = SetupWindow()
+        sm.add_widget(setup)
+        creation = CreationWindow()
+        sm.add_widget(creation)
+        restore = RestoreWindow()
+        sm.add_widget(restore)
+        game = Game()
+        sm.add_widget(game)
+        return sm
 
 
 MainApp().run()

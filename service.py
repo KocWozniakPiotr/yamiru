@@ -49,6 +49,7 @@ def server_connected():
         usr = context.wrap_socket(sock, server_hostname=_HOST)
     except socket.error:
         return False
+
     try:
         usr.settimeout(5)
         usr.connect((_HOST, 5005))
@@ -60,7 +61,7 @@ def server_connected():
         if int(latest_version) > server_version:
             print(server_version)
             # login_status = '...new version is available to download!'
-        usr.send(str('notify'+user_id).encode())
+        usr.send(str('notify' + user_id).encode())
         msg_storage = [int(m) for m in (usr.recv(256).decode()).split()]
         print(msg_storage)
         return True

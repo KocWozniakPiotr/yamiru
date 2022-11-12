@@ -42,7 +42,7 @@ def translate(packet):
         header = packet[0]
         content = packet[1:]
         if header == '0':
-            update_chat('- ')
+            update_chat('_')
             # Signal from server. checking if player is still online. Otherwise, server will send user offline
         if header == 'c':  # CHAT
             update_chat(content)

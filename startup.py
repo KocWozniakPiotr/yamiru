@@ -2,8 +2,41 @@ import configparser
 from scripts import backup
 from scripts import android_permissions
 
-config = configparser.ConfigParser()
-user_secret = None
+
+class ConfigManager:
+    user_secret = None
+    config = configparser.ConfigParser()
+
+    def active(self):
+        # Creates default_settings.ini if not created yet
+        try:
+            print('trying to read settings')
+            open('../settings.ini', 'r')
+            print('success!')
+            # checking if secret exist
+            self.config.read('../settings.ini')
+            if self.config.get('Startup', 'Secret') == 'None':
+                return False
+            return True
+        except OSError as e:
+            print(f'{e} could not find config so generating a new one')
+            new_config = open("../settings.ini", 'a+')
+            new_config.write(open("default_settings.ini", 'r').read())
+            new_config.close()
+            return False
+
+    def restore_backup(self):
+        from jnius import autoclass
+        _environment = autoclass('android.os.Environment')
+        sdcard_path = _environment.getExternalStorageDirectory().getAbsolutePath()
+
+        android_permissions.ask_for_permission()
+        self.user_secret = backup.recover_secret_from_backup(sdcard_path + '/Pictures/')
+        if self.user_secret is not None:
+            self.config.read('../settings.ini')
+            self.config.set('Startup', 'Secret', self.user_secret)
+            with open('../settings.ini', 'w') as current_config:
+                self.config.write(current_config)
 
 
 def start_notification_service():
@@ -34,47 +67,3 @@ def backup_data():
     file = Uri.fromFile(File(file_to_scan_path))
     mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, file)
     Context.sendBroadcast(mediaScanIntent)
-
-
-def restore_backup():
-    global user_secret
-    from jnius import autoclass
-    _environment = autoclass('android.os.Environment')
-    sdcard_path = _environment.getExternalStorageDirectory().getAbsolutePath()
-
-    android_permissions.ask_for_permission()
-    user_secret = backup.recover_secret_from_backup(sdcard_path + '/Pictures/')
-    if user_secret is not None:
-        config.read('../settings.ini')
-        config.set('Startup', 'Secret', user_secret)
-        with open('../settings.ini', 'w') as current_config:
-            config.write(current_config)
-        # client.t_server_connect.start()
-    else:
-        # backup failed
-        pass
-
-
-def config_active():
-    # Creates default_settings.ini if not created yet
-    try:
-        print('trying to read settings')
-        open('../settings.ini', 'r')
-        print('success!')
-        # checking if secret exist
-        config.read('../settings.ini')
-        if config.get('Startup', 'Secret') == 'None':
-            return False
-        return True
-    except OSError as e:
-        print(f'{e} could not find config so generating a new one')
-        create_config()
-        return False
-
-
-def create_config():
-    new_config = open("../settings.ini", 'a+')
-    new_config.write(open("default_settings.ini", 'r').read())
-    new_config.close()
-
-# webbrowser.open('https://asyllion.com')

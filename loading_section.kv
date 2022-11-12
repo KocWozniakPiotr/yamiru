@@ -25,6 +25,7 @@
 <Label>
     size_hint: (None, None)
     font_name: 'misc/pixel_type.ttf'
+
     color: red_light
 
 
@@ -33,6 +34,7 @@ WindowManager:
     SetupWindow:
     CreationWindow:
     RestoreWindow:
+    Game:
 
 
 <Loader>:
@@ -73,7 +75,8 @@ WindowManager:
                 size: self.size
             #    source: 'img/images.jpg'
         Label:
-            text: ''
+            text: '- SCIONS  OF  ASYLLION -'
+            font_size: 0.45 * self.height
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
@@ -220,7 +223,7 @@ WindowManager:
             size_hint: (None, None)
             width: root.xx
             height: root.yy/12
-            on_press: root.create_backup_btn()
+            on_press: root.create_account_btn()
 
         Button:
             text: "<  back"
@@ -301,3 +304,32 @@ WindowManager:
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
+
+<Game>:
+    name: "game"
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (None, None)
+        size: root.xx, root.yy
+        canvas.before:
+            Color:
+                rgba: utils.get_color_from_hex(purple_light)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+        TextInput:
+            text: root._output
+            multiline: True
+            text: root._output
+            size_hint: (None, None)
+            width: self.parent.width
+            height: self.parent.height
+            font_size: self.width/16
+            font_name: 'misc/pixel_type.ttf'
+            background_color: purple_light if self.focus else purple_light
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex(red_light)
+            pos_hint: {'center_x':0.5,'center_y':0}
