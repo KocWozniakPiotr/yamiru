@@ -207,6 +207,7 @@ def generate_stamp():
     return grow_image(title, 2)
 
 
+
 '''title = [[int(c) for c in row] for row in title]
 
 w = png.Writer(len(title[0]), len(title), greyscale=True, bitdepth=1)
