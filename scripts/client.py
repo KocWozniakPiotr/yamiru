@@ -14,6 +14,7 @@ class ClientConnection:
 
     def __init__(self):
         self.server_connected = False
+        self.current_status = None
         self.wait_for_approval = False
         self.allow_login_screen = False
         self.progress = 0
@@ -22,18 +23,26 @@ class ClientConnection:
         self.user_secret = ""
         self.user = ''
 
+    def update_server_message(self):
+        if player.server_response != '':
+            content = player.server_response
+            player.server_response = ''
+            return content
+        else:
+            return ''
+
     def server_connect(self):
         try:
             self._HOST = socket.gethostbyname(self.host_name)
         except socket.error:
-            print('FAILED! please check your internet connection')
+            self.current_status = 'please  check  your  internet  connection'
             return
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         context = ssl.SSLContext()
         try:
             self.usr = context.wrap_socket(sock, server_hostname=self._HOST)
         except socket.error:
-            print('FAILED! please check your internet connection')
+            self.current_status = 'please  check  your  internet  connection'
             return
         try:
             self.usr.settimeout(5)
@@ -53,7 +62,7 @@ class ClientConnection:
             elif self.update_available:
                 pass
         except socket.error:
-            print('server maintenance... try again later.')
+            self.current_status = 'server  maintenance . . .  try  again  later.'
             self.server_connected = False
 
     def send_key(self):

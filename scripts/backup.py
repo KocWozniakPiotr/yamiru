@@ -133,7 +133,7 @@ def recover_secret_from_backup(path):
     _key_from_pic = ''.join([chr(int(x, 2)) for x in b])
     print(_key_from_pic)
     print(_key_from_pic[2:170])
-    # WTF ?!?!?! DIFFERENT LENGHT OF CHAIN ?! ...yeah depending on how long is the user  id
+    # WTF ?!?!?! DIFFERENT LENGTH OF CHAIN ?! ...yeah depending on how long is the user  id
     final_encrypted = f.decrypt(bytes(clean_secret(_key_from_pic[2:170]).encode()))
     user_secret = str(final_encrypted)[1:].replace("'", '')
     return user_secret[:44] + user_secret[44:].replace('x', '')

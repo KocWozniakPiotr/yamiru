@@ -45,7 +45,7 @@ requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,requests,pyjniu
 
 # (str) Presplash of the application
 presplash.filename = img/splash_final.png
-android.presplash_color=#0c0420
+android.presplash_color=#0c061c
 # (str) Icon of the application
 # icon.filename = img/icon_alt.png
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)

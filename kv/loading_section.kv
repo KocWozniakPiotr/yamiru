@@ -6,37 +6,62 @@
 #:set red_middle '#990842'
 #:set red_dark '#560840'
 
-#:set violet_light '#1d0842'
-#:set violet_dark '#290840'
+#:set violet_light '#2f094a'
+#:set violet_dark '#1d0842'
 
-#:set purple_light '#0c0420'
-#:set purple_dark '#0c061c'
+#:set purple_light '#0c061c'
+#:set purple_dark '#0c0420'
 
 <Button>
     size_hint: (None, None)
-    background_color: utils.get_color_from_hex(violet_light)
-    background_down: violet_light
+    background_color: 0,0,0,0
     font_name: 'misc/pixel_type.ttf'
-    font_size: 0.45 * self.height
-    color: red_light
-    width: self.parent.width - ((self.parent.height/12)*2)
-    height: self.parent.height/12
-    pos_hint: {'center_x':0.5,'center_y':0}
+    width: self.parent.width*0.7
+    height: self.parent.width*0.15
+    pos_hint: {'center_x': 0.5}
+
+    Image:
+        border: 0,0,0,0
+        allow_stretch:True
+        keep_ratio: True
+        source: 'img/button_normal.png'
+        width: self.parent.width
+        height: self.parent.height
+        center_x: self.parent.center_x
+        center_y: self.parent.center_y
+        pos: self.parent.pos
+        color: red_middle
+
 
 <Label>
     size_hint: (None, None)
     font_name: 'misc/pixel_type.ttf'
-    color: red_light
+    color: purple_light
+
 
 <TextInput>
+    size_hint: (None, None)
     font_name: 'misc/pixel_type.ttf'
     multiline: False
     halign: "center"
     valign: "middle"
-    background_color: purple_dark if self.focus else purple_light
+    padding: [0,15*(self.parent.width*0.001),0,0]
+    cursor_width: "2sp"
+    hint_text: '' if self.focus else 'enter  nickname'
+    hint_text_color: red_middle if self.focus else violet_light
+    background_normal: purple_light
+    background_active: purple_light
+    background_color: purple_light if self.focus else purple_light
     canvas.before:
         Color:
-            rgba: utils.get_color_from_hex(red_light)
+            rgba: utils.get_color_from_hex(red_middle) if self.focus else utils.get_color_from_hex(violet_light)
+        Rectangle:
+            source: 'img/textfield.png'
+            size: 500*(self.parent.width*0.001), 100*(self.parent.width*0.001)
+            pos: int(self.center_x - 250*(self.parent.width*0.001)), int(self.center_y - 46*(self.parent.width*0.001))
+
+
+
 
 WindowManager:
     Loader:
@@ -46,6 +71,7 @@ WindowManager:
     EnteringGame:
     UpdateScreen:
     SetupScreen:
+    IngameScreen:
 
 
 <Loader>:
@@ -83,12 +109,16 @@ WindowManager:
                 pos: self.pos
                 size: self.size
             #    source: 'img/images.jpg'
+
+
+
         Label:
             text: '- SCIONS  OF  ASYLLION -'
             font_size: 0.45 * self.height
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
+            color: red_middle
 
         Image:
             id: logo
@@ -104,19 +134,29 @@ WindowManager:
 
         Button:
             size_hint: (None, None)
-            text: "new  player"
             on_press: root.new_player_btn()
             on_release:
                 app.root.current = "creation"
                 root.manager.transition.direction = "left"
 
+            Label:
+                text: "new  player"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
+
         Button:
             size_hint: (None, None)
-            text: "returning  player"
             on_press: root.returning_player_btn()
             on_release:
                 app.root.current = "restore"
                 root.manager.transition.direction = "left"
+
+            Label:
+                text: "returning  player"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
 
         Label:
             text: ""
@@ -171,19 +211,30 @@ WindowManager:
             height: root.yy/3
 
         Label:
-            text: 'Would  you  like  to  backup  you  profile  locally ?' + '\n' + '\n' + 'Local  backup  is  saved  in  a  form  of  a  picture.' + '\n' + 'You  can  store  it  later  wherever  you  want' + '\n' + 'for  restoring  your  account  in  the  future.'
+            text: 'Would  you  like  to  backup  your  profile  locally ?' + '\n' + '\n' + 'Local  backup  is  saved  in  a  form  of  a  picture.' + '\n' + 'You  can  move  it  later  wherever  you  want' + '\n' + 'for  restoring  your  account  in  the  future.'
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
             font_size: self.width/16
-            pos_hint: {'center_x':0.5,'center_y':0}
+            halign: "center"
+            valign: "middle"
+            color: red_middle
 
         GridLayout:
-            cols: 2
+            cols: 3
             padding : '-30dp', '50dp'
             spacing: '-30dp', '40dp'
             row_default_height: '30dp'
             pos_hint: {'center_x':0.4,'center_y':0}
+
+            Label:
+                text: ''
+                width: self.parent.width/10
+                height: self.parent.height/12 + sp(10)
+                size_hint: (None, None)
+                font_size: self.width/16
+                halign: "left"
+                color: red_middle
 
             Label:
                 text: 'yes,  backup  it  up  right  now'
@@ -191,20 +242,30 @@ WindowManager:
                 height: self.parent.height/12 + sp(10)
                 size_hint: (None, None)
                 font_size: self.width/16
-                halign: "left"
+                halign: "right"
+                color: red_middle
 
             CheckBox:
                 id: allow_id
                 group: 'check'
-                color: '#990842'
+                color: 0,0,0,0
                 active: True
                 on_active: root._allow = str(self.active)
                 on_press: root.checkbox_allow_btn(self, self.active)
                 canvas.before:
                     Rectangle:
-                        source: 'img/radio_btn.png'
+                        source: 'img/radio_btn_selected.png' if self.active else 'img/radio_btn.png'
                         size: sp(24), sp(24)
                         pos: int(self.center_x - sp(12)), int(self.center_y - sp(12))
+
+            Label:
+                text: ''
+                width: self.parent.width/10
+                height: self.parent.height/12 + sp(10)
+                size_hint: (None, None)
+                font_size: self.width/16
+                halign: "left"
+                color: red_middle
 
             Label:
                 text: 'please  let  me  decide  later . . .'
@@ -212,41 +273,54 @@ WindowManager:
                 height: self.parent.height/12 + sp(10)
                 size_hint: (None, None)
                 font_size: self.width/16
-                halign: "left"
+                halign: "right"
+                color: red_middle
 
             CheckBox:
                 id: deny_id
                 active: False
                 group: 'check'
-                color: '#990842'
+                color: 0,0,0,0
                 on_active: root._deny = str(self.active)
                 on_press: root.checkbox_deny_btn(self, self.active)
                 canvas.before:
                     Rectangle:
-                        source: 'img/radio_btn.png'
+                        source: 'img/radio_btn_selected.png' if self.active else 'img/radio_btn.png'
                         size: sp(24), sp(24)
                         pos: int(self.center_x - sp(12)), int(self.center_y - sp(12))
 
 
 
         Button:
-            text: "create  an  account"
             size_hint: (None, None)
             on_press: root.create_account_btn()
 
+            Label:
+                text: "create  an  account"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
+
+
+
         Button:
-            text: "<  back"
             size_hint: (None, None)
             on_press: root.back_btn()
             on_release:
                 app.root.current = "main"
                 root.manager.transition.direction = "right"
 
+            Label:
+                text: "<  back"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
+
         Label:
             text: ''
             width: self.parent.width
             height: self.parent.height/12
-            font_size: 0.45 * self.height
+            font_size: root.xx/16
             size_hint: (None, None)
 
 
@@ -299,19 +373,32 @@ WindowManager:
             height: self.parent.height/3
             font_size: self.width/16
             pos_hint: {'center_x':0.5,'center_y':0}
+            halign: 'center'
+            valign: 'middle'
+            color: red_middle
 
         Button:
-            text: "restore  profile"
             size_hint: (None, None)
             on_press: root.restore_btn()
 
+            Label:
+                text: "restore  profile"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
+
         Button:
-            text: "<  back"
             size_hint: (None, None)
             on_press: root.back_btn()
             on_release:
                 app.root.current = "main"
                 root.manager.transition.direction = "right"
+
+            Label:
+                text: "<  back"
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
 
         Label:
             text: ''
@@ -332,6 +419,24 @@ WindowManager:
                 pos: self.pos
                 size: self.size
 
+        Label:
+            id: warn
+            opacity: 0
+            text: root._output
+            font_size: self.width/16
+            color: purple_light
+            width: self.parent.width
+            height: self.parent.height/12
+            size_hint: (None, None)
+            pos: (0, self.parent.height/2)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex(red_light)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+
 <UpdateScreen>:
     name: "update"
     BoxLayout:
@@ -348,16 +453,23 @@ WindowManager:
         Label:
             text: 'a  new  version  of  the  game  is  available' + '\n' + 'update  to  continue . . .'
             halign: 'center'
-            font_size: 0.45 * (root.yy/12)
+            font_size: 0.42 * (root.yy/12)
             width: self.parent.width
-            height: self.parent.height/3
+            height: self.parent.height/4
             # font_size: self.width/16
             size_hint: (None, None)
+            color: red_middle
 
         Button:
-            text: 'update'
             size_hint: (None, None)
             on_press: root.update_btn()
+
+            Label:
+                text: 'update'
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
+
 
         Label:
             text: ''
@@ -394,33 +506,163 @@ WindowManager:
                     pos: self.pos
                     size: self.size
 
+        Image:
+            id: skin
+            source: ''
+            allow_stretch: True
+            mipmap: True
+            keep_ratio: True
+            anim_loop: 0
+            keep_data: True
+            anim_delay: 0
+            size_hint: (None, None)
+            width: root.xx
+            height: root.yy/3
 
         TextInput:
+            size_hint: (None, None)
             disabled: False
             id: input_nick
+            font_size: (0.45 * root.yy/12)
+            width: root.xx*0.66
+            height: root.yy/24
+            pos_hint: {'center_x': 0.5}
+
+        Label:
             text: ''
-            size: root.xx, root.yy/12
-            font_size: (0.45 * root.yy/12) * 2
+            width: self.parent.width
+            height: self.parent.height/60
             size_hint: (None, None)
 
+
+        Button:
+            size_hint: (None, None)
+            width: root.xx*0.66
+            height: root.yy/24
+            on_press: root.skin_btn()
+            Label:
+                text: 'change  skin'
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
 
         Label:
             id: status
-            text: 'create  your  nickname'
+            text: 'choose  your  profession'
             halign: 'center'
-            font_size: 0.45 * (root.yy/12)
+            font_size: 0.42 * (root.yy/12)
             width: self.parent.width
-            height: self.parent.height/3
-            # font_size: self.width/16
+            height: self.parent.height/4
             size_hint: (None, None)
+            color: red_middle
+
+        Label:
+            id: selected
+            color: purple_light
+            width: self.parent.width/3
+            height: self.parent.height/48
+            size_hint: (None, None)
+            pos_hint: {'center_x':-0.5}
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex(red_middle)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+
+
+
+
+        GridLayout:
+            cols: 3
+            size_hint: None, None
+            size: root.xx, root.yy/24
+
+
+            Button:
+                width: root.xx/3
+                height: self.parent.height
+                font_size: 0.35 * (root.yy/12)
+                on_press: root.profession_btn(0)
+                Label:
+                    text: 'Buster'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    font_size: root.xx/16
+
+
+            Button:
+                width: root.xx/3
+                height: self.parent.height
+                font_size: 0.35 * (root.yy/12)
+                on_press: root.profession_btn(1)
+                Label:
+                    text: 'Maestro'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    font_size: root.xx/16
+
+
+            Button:
+                width: root.xx/3
+                height: self.parent.height
+                font_size: 0.44 * (root.yy/12)
+                on_press: root.profession_btn(2)
+                Label:
+                    text: 'Collector'
+                    center_x: self.parent.center_x
+                    center_y: self.parent.center_y
+                    font_size: root.xx/16
+
+        Label:
+            text: ''
+            height: self.parent.height/48
+
+
 
         Button:
-            text: 'confirm'
-            size_hint: (None, None)
             on_press: root.validate_btn(input_nick.text)
+            font_size: 0.35 * (root.yy/12)
+
+            Label:
+                text: 'confirm'
+                center_x: self.parent.center_x
+                center_y: self.parent.center_y
+                font_size: root.xx/16
 
         Label:
             text: ''
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
+
+<IngameScreen>:
+    name: "ingame"
+    BoxLayout:
+        orientation: "vertical"
+        size_hint: (None, None)
+        size: root.xx, root.yy
+        canvas.before:
+            Color:
+                rgba: utils.get_color_from_hex(purple_light)
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+
+
+        Label:
+            id: warn
+            opacity: 1
+            text: "successfully  entered  game  ^^"
+            font_size: self.width/16
+            color: purple_light
+            width: self.parent.width
+            height: self.parent.height/12
+            size_hint: (None, None)
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex(red_light)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size

@@ -1,10 +1,9 @@
 import socket
 import time
 from threading import Thread
+from scripts.handlers.player import *
 
-from scripts.handlers.player import PlayerDict
-
-chat_list = []
+player = PlayerHandler()
 nickname = ''
 
 
@@ -21,9 +20,13 @@ class DataReceiver:
     def start_spoofing_packets(self):
         while True:
             try:
-                self.translate(self.usr.recv(256).decode())
-            except socket.error:
+                self.usr.settimeout(10)
+                packet = self.usr.recv(256).decode()
+                self.usr.settimeout(None)
+            except socket.error as e:
+                print(f'[{e}] could not receive packet, breaking loop and usr connection')
                 break
+            self.translate(packet)
         self.usr.close()
 
     def translate(self, packet):
@@ -31,47 +34,22 @@ class DataReceiver:
             header = packet[0]
             content = packet[1:]
             if header == '0':
-                pass
+                print('-')
                 # Signal from server. checking if player is still online. Otherwise, server will send user offline
             if header == 'c':  # CHAT
-                self.update_chat(content)
+                pass  # self.update_chat(content)
             elif header == 'm':  # MOVEMENT
                 print('move character to destined position on the map')
             elif header == 'a':  # ACTION
                 print('activate an action or skill which player send request for')
             elif header == 'p':  # PLAYER
-                print('update player stats')
+                player.update(packet)
             elif header == 'i':  # INVENTORY
                 print('update inventory functions')
             elif header == 'd':  # LOOT
                 print('display received drop')
             elif header == 'g':  # GUILD
                 print('receive guild info')
-
-    def update_chat(self, message):
-        words = message.split(' ')
-        # if other players message
-        header = ''
-        # if announcement or command message
-        if '#' in words[0]:
-            words[0] = ''
-            words.pop(0)
-            header = '# '
-            # if current player message
-        elif len(nickname) > 0:
-            if nickname in words[0]:
-                header = ' '
-        temp_line = header
-        for x in words:
-            if len(x + temp_line) + 2 < 50:
-                temp_line += x + '  '
-            else:
-                chat_list.insert(0, temp_line)
-                temp_line = header + x + '  '
-        if len(temp_line) < 50:
-            chat_list.insert(0, temp_line)
-        while len(chat_list) > 100:
-            chat_list.pop()
 
 
 class DataSender:
@@ -85,19 +63,16 @@ class DataSender:
 
     def send_online_status(self):
         while True:
-            time.sleep(3)
             try:
+                self.usr.settimeout(10)
                 self.usr.send('0'.encode())
-            except socket.error:
-                break
-        self.usr.close()
+                self.usr.settimeout(None)
+            except:
+                print("awaiting response from server...")
+            time.sleep(3)
 
-    def send_nickname(self, nick):
+    def send_nickname(self, profession, skin, nick):
         try:
-            self.usr.send((PlayerDict.nick_change + nick).encode())
+            self.usr.send((create_character + str(profession) + str(skin) + nick).encode())
         except socket.error:
-            return
-
-    def send_chat(self, msg):
-        if len(msg) > 0:
-            self.usr.send(('c' + msg).encode())
+            pass
