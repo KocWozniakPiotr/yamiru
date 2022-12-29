@@ -13,7 +13,7 @@ package.domain = org.kivy
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas,wav,ogg,zip,ini,ttf
+source.include_exts = py,png,jpg,kv,atlas,wav,ogg,zip,ini,ttf,otf
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png

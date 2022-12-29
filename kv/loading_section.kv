@@ -1,7 +1,6 @@
 #:kivy 2.1.0
 #: import utils kivy.utils
 
-
 #:set red_light '#c7185e'
 #:set red_middle '#990842'
 #:set red_dark '#560840'
@@ -11,11 +10,10 @@
 
 #:set purple_light '#0c061c'
 #:set purple_dark '#0c0420'
-
 <Button>
     size_hint: (None, None)
     background_color: 0,0,0,0
-    font_name: 'misc/pixel_type.ttf'
+    font_name: 'misc/pixel_type.otf'
     width: self.parent.width*0.7
     height: self.parent.width*0.15
     pos_hint: {'center_x': 0.5}
@@ -30,18 +28,18 @@
         center_x: self.parent.center_x
         center_y: self.parent.center_y
         pos: self.parent.pos
-        color: red_middle
+        # color: red_middle
 
 
 <Label>
     size_hint: (None, None)
-    font_name: 'misc/pixel_type.ttf'
+    font_name: 'misc/pixel_type.otf'
     color: purple_light
 
 
 <TextInput>
     size_hint: (None, None)
-    font_name: 'misc/pixel_type.ttf'
+    font_name: 'misc/pixel_type.otf'
     multiline: False
     halign: "center"
     valign: "middle"
@@ -64,6 +62,13 @@
 
 
 WindowManager:
+
+    canvas.before:
+        Color:
+            rgba: utils.get_color_from_hex(purple_light)
+        Rectangle:
+            pos: self.pos
+            size: self.size
     Loader:
     MainWindow:
     CreationWindow:
@@ -87,14 +92,32 @@ WindowManager:
                 pos: self.pos
                 size: self.size
 
+
+
         Image:
-            id: dupa
+            id: progress_bar
             source: 'img/loading/0.png'
-            size_hint: (None, None)
             keep_ratio: True
             allow_stretch: True
             width: root.xx
-            height: root.yy
+            height: root.xx
+            pos_hint: {'center_x':0.5,'center_y':0.5}
+
+        Label:
+            id: warn
+            opacity: 0
+            text: root._output
+            font_size: (self.width/16)/1.2
+            color: purple_light
+            width: self.parent.width
+            height: self.parent.height/12
+            pos_hint: {'center_x':0.5,'center_y':0.5}
+            canvas.before:
+                Color:
+                    rgba: utils.get_color_from_hex(red_light)
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
 
 <MainWindow>:
     name: "main"
@@ -113,8 +136,8 @@ WindowManager:
 
 
         Label:
-            text: '- SCIONS  OF  ASYLLION -'
-            font_size: 0.45 * self.height
+            text: '- SCIONS OF ASYLLION -'
+            font_size: (0.45 * self.height)
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
@@ -140,10 +163,10 @@ WindowManager:
                 root.manager.transition.direction = "left"
 
             Label:
-                text: "new  player"
+                text: "new player"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Button:
             size_hint: (None, None)
@@ -153,18 +176,18 @@ WindowManager:
                 root.manager.transition.direction = "left"
 
             Label:
-                text: "returning  player"
+                text: "returning player"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Label:
             text: ""
             size_hint: (None, None)
             width: self.parent.width
             height: self.parent.height/12
-            font_name: 'misc/pixel_type.ttf'
-            font_size: self.width/16
+            font_name: 'misc/pixel_type.otf'
+            font_size: (self.width/16)/1.2
             color: red_light
 
 <CreationWindow>:
@@ -186,7 +209,7 @@ WindowManager:
             opacity: 0
             halign: "center"
             text: root._output
-            font_size: self.width/16
+            font_size: (self.width/16)/1.2
             color: purple_light
             width: self.parent.width
             height: self.parent.height/12
@@ -211,11 +234,11 @@ WindowManager:
             height: root.yy/3
 
         Label:
-            text: 'Would  you  like  to  backup  your  profile  locally ?' + '\n' + '\n' + 'Local  backup  is  saved  in  a  form  of  a  picture.' + '\n' + 'You  can  move  it  later  wherever  you  want' + '\n' + 'for  restoring  your  account  in  the  future.'
+            text: 'Would you like to backup your profile locally ?' + '\n' + '\n' + 'Local backup is saved in a form of a picture.' + '\n' + 'You can move it later wherever you want' + '\n' + 'for restoring your account in the future.'
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
-            font_size: self.width/16
+            font_size: (self.width/16)/1.2
             halign: "center"
             valign: "middle"
             color: red_middle
@@ -232,16 +255,16 @@ WindowManager:
                 width: self.parent.width/10
                 height: self.parent.height/12 + sp(10)
                 size_hint: (None, None)
-                font_size: self.width/16
+                font_size: (self.width/16)/1.2
                 halign: "left"
                 color: red_middle
 
             Label:
-                text: 'yes,  backup  it  up  right  now'
+                text: 'yes, backup it up right now'
                 width: self.parent.width
                 height: self.parent.height/12 + sp(10)
                 size_hint: (None, None)
-                font_size: self.width/16
+                font_size: (self.width/16)/1.2
                 halign: "right"
                 color: red_middle
 
@@ -263,16 +286,16 @@ WindowManager:
                 width: self.parent.width/10
                 height: self.parent.height/12 + sp(10)
                 size_hint: (None, None)
-                font_size: self.width/16
+                font_size: (self.width/16)/1.2
                 halign: "left"
                 color: red_middle
 
             Label:
-                text: 'please  let  me  decide  later . . .'
+                text: 'please let me decide later...'
                 width: self.parent.width
                 height: self.parent.height/12 + sp(10)
                 size_hint: (None, None)
-                font_size: self.width/16
+                font_size: (self.width/16)/1.2
                 halign: "right"
                 color: red_middle
 
@@ -296,10 +319,10 @@ WindowManager:
             on_press: root.create_account_btn()
 
             Label:
-                text: "create  an  account"
+                text: "create an account"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
 
 
@@ -311,16 +334,16 @@ WindowManager:
                 root.manager.transition.direction = "right"
 
             Label:
-                text: "<  back"
+                text: "< back"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Label:
             text: ''
             width: self.parent.width
             height: self.parent.height/12
-            font_size: root.xx/16
+            font_size: (root.xx/16)*1.2
             size_hint: (None, None)
 
 
@@ -342,7 +365,7 @@ WindowManager:
             id: warn
             opacity: 0
             text: root._output
-            font_size: self.width/16
+            font_size: (self.width/16)/1.2
             color: purple_light
             width: self.parent.width
             height: self.parent.height/12
@@ -367,11 +390,11 @@ WindowManager:
             height: root.yy/3
 
         Label:
-            text:'If  you  already  have  an  account  and  made' + '\n' + 'a  backup  of  your  profile  in  the  past,' + '\n' + 'you  can  restore  it  here.' + '\n' + '\n' + 'Your  backup  is  saved  in  Pictures  by  default.' + '\n' + 'If  you  moved  it  somewhere  else,' + '\n' + 'please  place  it  back  to  the  Pictures  directory.'
+            text:'If you already have an account and made' + '\n' + 'a backup of your profile in the past,' + '\n' + 'you can restore it here.' + '\n' + '\n' + 'Your backup is saved in Pictures by default.' + '\n' + 'If you moved it somewhere else,' + '\n' + 'please place it back to the Pictures directory.'
             size_hint: (None, None)
             width: self.parent.width
             height: self.parent.height/3
-            font_size: self.width/16
+            font_size: (self.width/16)/1.2
             pos_hint: {'center_x':0.5,'center_y':0}
             halign: 'center'
             valign: 'middle'
@@ -382,10 +405,10 @@ WindowManager:
             on_press: root.restore_btn()
 
             Label:
-                text: "restore  profile"
+                text: "restore profile"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Button:
             size_hint: (None, None)
@@ -395,10 +418,10 @@ WindowManager:
                 root.manager.transition.direction = "right"
 
             Label:
-                text: "<  back"
+                text: "< back"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Label:
             text: ''
@@ -423,7 +446,7 @@ WindowManager:
             id: warn
             opacity: 0
             text: root._output
-            font_size: self.width/16
+            font_size: (self.width/16)/1.2
             color: purple_light
             width: self.parent.width
             height: self.parent.height/12
@@ -451,12 +474,12 @@ WindowManager:
                 size: self.size
 
         Label:
-            text: 'a  new  version  of  the  game  is  available' + '\n' + 'update  to  continue . . .'
+            text: 'a new version of the game is available' + '\n' + 'update to continue...'
             halign: 'center'
             font_size: 0.42 * (root.yy/12)
             width: self.parent.width
             height: self.parent.height/4
-            # font_size: self.width/16
+            # font_size: (self.width/16)/1.2
             size_hint: (None, None)
             color: red_middle
 
@@ -468,7 +491,7 @@ WindowManager:
                 text: 'update'
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
 
         Label:
@@ -494,7 +517,7 @@ WindowManager:
             id: warn
             opacity: 0
             text: root._output
-            font_size: self.width/16
+            font_size: (self.width/16)/1.2
             color: purple_light
             width: self.parent.width
             height: self.parent.height/12
@@ -544,11 +567,11 @@ WindowManager:
                 text: 'change  skin'
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Label:
             id: status
-            text: 'choose  your  profession'
+            text: 'choose your profession'
             halign: 'center'
             font_size: 0.42 * (root.yy/12)
             width: self.parent.width
@@ -588,7 +611,7 @@ WindowManager:
                     text: 'Buster'
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
-                    font_size: root.xx/16
+                    font_size: (root.xx/16)*1.2
 
 
             Button:
@@ -600,7 +623,7 @@ WindowManager:
                     text: 'Maestro'
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
-                    font_size: root.xx/16
+                    font_size: (root.xx/16)*1.2
 
 
             Button:
@@ -612,7 +635,7 @@ WindowManager:
                     text: 'Collector'
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
-                    font_size: root.xx/16
+                    font_size: (root.xx/16)*1.2
 
         Label:
             text: ''
@@ -628,7 +651,7 @@ WindowManager:
                 text: 'confirm'
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: root.xx/16
+                font_size: (root.xx/16)*1.2
 
         Label:
             text: ''
@@ -638,8 +661,8 @@ WindowManager:
 
 <IngameScreen>:
     name: "ingame"
-    BoxLayout:
-        orientation: "vertical"
+    FloatLayout:
+        id: float_layout
         size_hint: (None, None)
         size: root.xx, root.yy
         canvas.before:
@@ -648,21 +671,3 @@ WindowManager:
             Rectangle:
                 pos: self.pos
                 size: self.size
-
-
-
-        Label:
-            id: warn
-            opacity: 1
-            text: "successfully  entered  game  ^^"
-            font_size: self.width/16
-            color: purple_light
-            width: self.parent.width
-            height: self.parent.height/12
-            size_hint: (None, None)
-            canvas.before:
-                Color:
-                    rgba: utils.get_color_from_hex(red_light)
-                Rectangle:
-                    pos: self.pos
-                    size: self.size

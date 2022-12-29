@@ -3,6 +3,7 @@ import configparser
 
 class ConfigManager:
     user_secret = None
+    tutorial = 'empty'
     config = configparser.ConfigParser()
     allow_backup = False
 
@@ -14,8 +15,10 @@ class ConfigManager:
             print('success!')
             # checking if secret exist
             self.config.read('../settings.ini')
-            if self.config.get('Startup', 'Secret') == 'None':
+            self.tutorial = self.config.get('Startup', 'Tutorial')
+            if self.tutorial == 'empty' or self.tutorial == 'started':
                 return False
+            self.tutorial = 'finished'
             return True
         except OSError as e:
             print(f'{e} could not find config so generating a new one')
