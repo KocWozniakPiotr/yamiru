@@ -1,19 +1,17 @@
 #:kivy 2.1.0
 #: import utils kivy.utils
 
-#:set red_light '#c7185e'
-#:set red_middle '#990842'
-#:set red_dark '#560840'
+#:set white '#ffdaeb'
+#:set soft_pink '#ff477c'
+#:set pink '#d3127d'
+#:set hard_pink '#8a0356'
+#:set light_purple '#480045'
+#:set dark_purple '#290020'
 
-#:set violet_light '#2f094a'
-#:set violet_dark '#1d0842'
-
-#:set purple_light '#0c061c'
-#:set purple_dark '#0c0420'
 <Button>
     size_hint: (None, None)
     background_color: 0,0,0,0
-    font_name: 'misc/pixel_type.otf'
+    font_name: 'misc/pixeltype.ttf'
     width: self.parent.width*0.7
     height: self.parent.width*0.15
     pos_hint: {'center_x': 0.5}
@@ -22,39 +20,40 @@
         border: 0,0,0,0
         allow_stretch:True
         keep_ratio: True
-        source: 'img/button_normal.png'
+        source: 'img/ui/button_normal.png'
         width: self.parent.width
         height: self.parent.height
         center_x: self.parent.center_x
         center_y: self.parent.center_y
         pos: self.parent.pos
-        # color: red_middle
+        color: soft_pink
 
 
 <Label>
     size_hint: (None, None)
-    font_name: 'misc/pixel_type.otf'
-    color: purple_light
+    font_name: 'misc/pixeltype.ttf'
+    color: light_purple
 
 
 <TextInput>
     size_hint: (None, None)
-    font_name: 'misc/pixel_type.otf'
+    font_name: 'misc/pixeltype.ttf'
+    font_size: (0.45 * self.height)*1.55
     multiline: False
     halign: "center"
     valign: "middle"
     padding: [0,15*(self.parent.width*0.001),0,0]
     cursor_width: "2sp"
-    hint_text: '' if self.focus else 'enter  nickname'
-    hint_text_color: red_middle if self.focus else violet_light
-    background_normal: purple_light
-    background_active: purple_light
-    background_color: purple_light if self.focus else purple_light
+    hint_text: '' if self.focus else 'enter nickname'
+    hint_text_color: soft_pink if self.focus else hard_pink
+    background_normal: dark_purple
+    background_active: dark_purple
+    background_color: dark_purple if self.focus else dark_purple
     canvas.before:
         Color:
-            rgba: utils.get_color_from_hex(red_middle) if self.focus else utils.get_color_from_hex(violet_light)
+            rgba: utils.get_color_from_hex(soft_pink) if self.focus else utils.get_color_from_hex(hard_pink)
         Rectangle:
-            source: 'img/textfield.png'
+            source: 'img/ui/textfield.png'
             size: 500*(self.parent.width*0.001), 100*(self.parent.width*0.001)
             pos: int(self.center_x - 250*(self.parent.width*0.001)), int(self.center_y - 46*(self.parent.width*0.001))
 
@@ -65,7 +64,7 @@ WindowManager:
 
     canvas.before:
         Color:
-            rgba: utils.get_color_from_hex(purple_light)
+            rgba: utils.get_color_from_hex(dark_purple)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -87,11 +86,10 @@ WindowManager:
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
-
 
 
         Image:
@@ -105,16 +103,17 @@ WindowManager:
 
         Label:
             id: warn
+            halign: "center"
             opacity: 0
             text: root._output
-            font_size: (self.width/16)/1.2
-            color: purple_light
+            font_size: (self.width/16)/1.3
+            color: light_purple
             width: self.parent.width
             height: self.parent.height/12
             pos_hint: {'center_x':0.5,'center_y':0.5}
             canvas.before:
                 Color:
-                    rgba: utils.get_color_from_hex(red_light)
+                    rgba: utils.get_color_from_hex(soft_pink)
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -127,7 +126,7 @@ WindowManager:
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -137,11 +136,12 @@ WindowManager:
 
         Label:
             text: '- SCIONS OF ASYLLION -'
-            font_size: (0.45 * self.height)
-            width: self.parent.width
+            font_size: (0.40 * self.height)
+            width: self.parent.width*0.9
+            pos_hint: {'center_x':0.5}
             height: self.parent.height/12
             size_hint: (None, None)
-            color: red_middle
+            color: soft_pink
 
         Image:
             id: logo
@@ -151,7 +151,7 @@ WindowManager:
             keep_ratio: True
             anim_loop: 0
             keep_data: True
-            anim_delay: 0
+            anim_delay: 0.05
             width: self.parent.width
             height: self.parent.height/2
 
@@ -160,35 +160,33 @@ WindowManager:
             on_press: root.new_player_btn()
             on_release:
                 app.root.current = "creation"
-                root.manager.transition.direction = "left"
 
             Label:
                 text: "new player"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
         Button:
             size_hint: (None, None)
             on_press: root.returning_player_btn()
             on_release:
                 app.root.current = "restore"
-                root.manager.transition.direction = "left"
 
             Label:
                 text: "returning player"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
         Label:
             text: ""
             size_hint: (None, None)
             width: self.parent.width
             height: self.parent.height/12
-            font_name: 'misc/pixel_type.otf'
+            font_name: 'misc/pixeltype.ttf'
             font_size: (self.width/16)/1.2
-            color: red_light
+            color: soft_pink
 
 <CreationWindow>:
     name: "creation"
@@ -199,7 +197,7 @@ WindowManager:
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
@@ -209,14 +207,14 @@ WindowManager:
             opacity: 0
             halign: "center"
             text: root._output
-            font_size: (self.width/16)/1.2
-            color: purple_light
+            font_size: (self.width/16)/1.3
+            color: light_purple
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
             canvas.before:
                 Color:
-                    rgba: utils.get_color_from_hex(red_light)
+                    rgba: utils.get_color_from_hex(soft_pink)
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -235,13 +233,14 @@ WindowManager:
 
         Label:
             text: 'Would you like to backup your profile locally ?' + '\n' + '\n' + 'Local backup is saved in a form of a picture.' + '\n' + 'You can move it later wherever you want' + '\n' + 'for restoring your account in the future.'
-            width: self.parent.width
+            pos_hint: {'center_x': 0.5}
+            width: self.parent.width*0.9
             height: self.parent.height/12
             size_hint: (None, None)
             font_size: (self.width/16)/1.2
             halign: "center"
             valign: "middle"
-            color: red_middle
+            color: soft_pink
 
         GridLayout:
             cols: 3
@@ -253,20 +252,20 @@ WindowManager:
             Label:
                 text: ''
                 width: self.parent.width/10
-                height: self.parent.height/12 + sp(10)
+                height: self.parent.height/12
                 size_hint: (None, None)
                 font_size: (self.width/16)/1.2
                 halign: "left"
-                color: red_middle
+                color: pink
 
             Label:
-                text: 'yes, backup it up right now'
-                width: self.parent.width
-                height: self.parent.height/12 + sp(10)
+                text: '       yes, backup it up right now'
+                width: self.parent.width*0.9
+                height: self.parent.height/12
                 size_hint: (None, None)
                 font_size: (self.width/16)/1.2
                 halign: "right"
-                color: red_middle
+                color: soft_pink
 
             CheckBox:
                 id: allow_id
@@ -277,27 +276,27 @@ WindowManager:
                 on_press: root.checkbox_allow_btn(self, self.active)
                 canvas.before:
                     Rectangle:
-                        source: 'img/radio_btn_selected.png' if self.active else 'img/radio_btn.png'
+                        source: 'img/ui/radio_btn_selected.png' if self.active else 'img/ui/radio_btn.png'
                         size: sp(24), sp(24)
                         pos: int(self.center_x - sp(12)), int(self.center_y - sp(12))
 
             Label:
                 text: ''
                 width: self.parent.width/10
-                height: self.parent.height/12 + sp(10)
+                height: self.parent.height/12
                 size_hint: (None, None)
                 font_size: (self.width/16)/1.2
                 halign: "left"
-                color: red_middle
+                color: pink
 
             Label:
-                text: 'please let me decide later...'
-                width: self.parent.width
-                height: self.parent.height/12 + sp(10)
+                text: '       please let me decide later...'
+                width: self.parent.width*0.9
+                height: self.parent.height/12
                 size_hint: (None, None)
                 font_size: (self.width/16)/1.2
                 halign: "right"
-                color: red_middle
+                color: soft_pink
 
             CheckBox:
                 id: deny_id
@@ -308,7 +307,7 @@ WindowManager:
                 on_press: root.checkbox_deny_btn(self, self.active)
                 canvas.before:
                     Rectangle:
-                        source: 'img/radio_btn_selected.png' if self.active else 'img/radio_btn.png'
+                        source: 'img/ui/radio_btn_selected.png' if self.active else 'img/ui/radio_btn.png'
                         size: sp(24), sp(24)
                         pos: int(self.center_x - sp(12)), int(self.center_y - sp(12))
 
@@ -322,7 +321,7 @@ WindowManager:
                 text: "create an account"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
 
 
@@ -331,19 +330,18 @@ WindowManager:
             on_press: root.back_btn()
             on_release:
                 app.root.current = "main"
-                root.manager.transition.direction = "right"
 
             Label:
-                text: "< back"
+                text: "back"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
         Label:
             text: ''
             width: self.parent.width
             height: self.parent.height/12
-            font_size: (root.xx/16)*1.2
+            font_size: (root.xx/16)
             size_hint: (None, None)
 
 
@@ -356,23 +354,24 @@ WindowManager:
         size_hint: (None, None)
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         Label:
             id: warn
+            halign: "center"
             opacity: 0
             text: root._output
-            font_size: (self.width/16)/1.2
-            color: purple_light
+            font_size: (self.width/16)/1.3
+            color: light_purple
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
             canvas.before:
                 Color:
-                    rgba: utils.get_color_from_hex(red_light)
+                    rgba: utils.get_color_from_hex(soft_pink)
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -392,13 +391,14 @@ WindowManager:
         Label:
             text:'If you already have an account and made' + '\n' + 'a backup of your profile in the past,' + '\n' + 'you can restore it here.' + '\n' + '\n' + 'Your backup is saved in Pictures by default.' + '\n' + 'If you moved it somewhere else,' + '\n' + 'please place it back to the Pictures directory.'
             size_hint: (None, None)
-            width: self.parent.width
+            pos_hint: {'center_x': 0.5}
+            width: self.parent.width*0.9
             height: self.parent.height/3
             font_size: (self.width/16)/1.2
             pos_hint: {'center_x':0.5,'center_y':0}
             halign: 'center'
             valign: 'middle'
-            color: red_middle
+            color: soft_pink
 
         Button:
             size_hint: (None, None)
@@ -408,20 +408,19 @@ WindowManager:
                 text: "restore profile"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
         Button:
             size_hint: (None, None)
             on_press: root.back_btn()
             on_release:
                 app.root.current = "main"
-                root.manager.transition.direction = "right"
 
             Label:
-                text: "< back"
+                text: "back"
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
         Label:
             text: ''
@@ -430,31 +429,32 @@ WindowManager:
             size_hint: (None, None)
 
 <EnteringGame>:
-    name: "entering_game"
+    name: "entering_screen"
     BoxLayout:
         orientation: "vertical"
         size_hint: (None, None)
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         Label:
             id: warn
+            halign: "center"
             opacity: 0
             text: root._output
-            font_size: (self.width/16)/1.2
-            color: purple_light
+            font_size: (self.width/16)/1.3
+            color: light_purple
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
             pos: (0, self.parent.height/2)
             canvas.before:
                 Color:
-                    rgba: utils.get_color_from_hex(red_light)
+                    rgba: utils.get_color_from_hex(soft_pink)
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -468,20 +468,22 @@ WindowManager:
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         Label:
             text: 'a new version of the game is available' + '\n' + 'update to continue...'
+            pos_hint: {'center_x':0.5,'center_y':0}
             halign: 'center'
-            font_size: 0.42 * (root.yy/12)
-            width: self.parent.width
+            valign: 'middle'
+            font_size: (self.width/16)/1.2
+            width: self.parent.width*0.9
             height: self.parent.height/4
-            # font_size: (self.width/16)/1.2
+
             size_hint: (None, None)
-            color: red_middle
+            color: soft_pink
 
         Button:
             size_hint: (None, None)
@@ -491,7 +493,7 @@ WindowManager:
                 text: 'update'
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
 
         Label:
@@ -508,23 +510,24 @@ WindowManager:
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
 
         Label:
             id: warn
+            halign: "center"
             opacity: 0
             text: root._output
-            font_size: (self.width/16)/1.2
-            color: purple_light
+            font_size: (self.width/16)/1.3
+            color: light_purple
             width: self.parent.width
             height: self.parent.height/12
             size_hint: (None, None)
             canvas.before:
                 Color:
-                    rgba: utils.get_color_from_hex(red_light)
+                    rgba: utils.get_color_from_hex(soft_pink)
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -564,35 +567,35 @@ WindowManager:
             height: root.yy/24
             on_press: root.skin_btn()
             Label:
-                text: 'change  skin'
+                text: 'change skin'
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)/1.2
 
         Label:
             id: status
             text: 'choose your profession'
             halign: 'center'
-            font_size: 0.42 * (root.yy/12)
-            width: self.parent.width
+            font_size: (self.width/16)/1.2
+            width: self.parent.width*0.9
+            pos_hint: {'center_x':0.5}
             height: self.parent.height/4
             size_hint: (None, None)
-            color: red_middle
+            color: soft_pink
 
         Label:
             id: selected
-            color: purple_light
+            color: light_purple
             width: self.parent.width/3
             height: self.parent.height/48
             size_hint: (None, None)
             pos_hint: {'center_x':-0.5}
             canvas.before:
                 Color:
-                    rgba: utils.get_color_from_hex(red_middle)
+                    rgba: utils.get_color_from_hex(soft_pink)
                 Rectangle:
                     pos: self.pos
                     size: self.size
-
 
 
 
@@ -611,7 +614,7 @@ WindowManager:
                     text: 'Buster'
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
-                    font_size: (root.xx/16)*1.2
+                    font_size: (root.xx/16)/1.2
 
 
             Button:
@@ -623,8 +626,7 @@ WindowManager:
                     text: 'Maestro'
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
-                    font_size: (root.xx/16)*1.2
-
+                    font_size: (root.xx/16)/1.2
 
             Button:
                 width: root.xx/3
@@ -635,7 +637,7 @@ WindowManager:
                     text: 'Collector'
                     center_x: self.parent.center_x
                     center_y: self.parent.center_y
-                    font_size: (root.xx/16)*1.2
+                    font_size: (root.xx/16)/1.2
 
         Label:
             text: ''
@@ -651,7 +653,7 @@ WindowManager:
                 text: 'confirm'
                 center_x: self.parent.center_x
                 center_y: self.parent.center_y
-                font_size: (root.xx/16)*1.2
+                font_size: (root.xx/16)
 
         Label:
             text: ''
@@ -667,7 +669,7 @@ WindowManager:
         size: root.xx, root.yy
         canvas.before:
             Color:
-                rgba: utils.get_color_from_hex(purple_light)
+                rgba: utils.get_color_from_hex(dark_purple)
             Rectangle:
                 pos: self.pos
                 size: self.size
