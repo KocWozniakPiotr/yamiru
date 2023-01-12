@@ -28,7 +28,7 @@ info_title = '- SCIONS OF ASYLLION -'
 
 info_creation = 'Would you like to backup your profile locally ?' + '\n' + '\n' + 'Local backup is saved in a form of a picture.' + '\n' + 'You can move it later wherever you want' + '\n' + 'for restoring your account in the future.'
 
-info_creation_warning = 'backup already exists in pictures directory' + '\n' + 'try restoring your profile from it '
+info_creation_warning = 'backup already exists in pictures directory' + '\n' + 'try restoring your profile from it'
 
 info_restore = 'If you already have an account and made' + '\n' + 'a backup of your profile in the past,' + '\n' + 'you can restore it here.' + '\n' + '\n' + 'Your backup is saved in Pictures by default.' + '\n' + 'If you moved it somewhere else,' + '\n' + 'please place it back to the Pictures directory.'
 
