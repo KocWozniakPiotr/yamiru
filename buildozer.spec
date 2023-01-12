@@ -1,10 +1,10 @@
 [app]
 
 # (str) Title of your application
-title = Yamiru
+title = Scions of Asyllion
 
 # (str) Package name
-package.name = yamiru
+package.name = scionsofasyllion
 
 # (str) Package domain (needed for android/ios packaging)
 package.domain = org.kivy
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,wav,ogg,zip,ini,ttf,otf
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 0.0.1
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]
@@ -45,7 +45,7 @@ requirements = python3,kivy==2.1.0,ffpyplayer,python-for-android,requests,pyjniu
 
 # (str) Presplash of the application
 presplash.filename = img/splash_final.png
-android.presplash_color=#0c061c
+android.presplash_color=#290020
 # (str) Icon of the application
 # icon.filename = img/icon_alt.png
 # (str) Supported orientation (one of landscape, sensorLandscape, portrait or all)
