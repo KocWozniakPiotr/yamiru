@@ -1,6 +1,5 @@
 from scripts.startup import ConfigManager
 import ssl
-from threading import *
 from scripts.signals import *
 
 
@@ -35,14 +34,14 @@ class ClientConnection:
         try:
             self._HOST = socket.gethostbyname(self.host_name)
         except socket.error:
-            self.current_status = 'please  check  your  internet  connection'
+            self.current_status = 'please check your internet connection'
             return
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         context = ssl.SSLContext()
         try:
             self.usr = context.wrap_socket(sock, server_hostname=self._HOST)
         except socket.error:
-            self.current_status = 'please  check  your  internet  connection'
+            self.current_status = 'please check your internet connection'
             return
         try:
             self.usr.settimeout(5)
@@ -62,7 +61,7 @@ class ClientConnection:
             elif self.update_available:
                 pass
         except socket.error:
-            self.current_status = 'server  maintenance . . .  try  again  later.'
+            self.current_status = 'server maintenance... try again later.'
             self.server_connected = False
 
     def send_key(self):
