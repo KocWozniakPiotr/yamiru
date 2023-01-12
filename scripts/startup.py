@@ -31,6 +31,6 @@ class ConfigManager:
 def start_notification_service():
     from jnius import autoclass
     ##################################################################
-    service = autoclass('org.kivy.yamiru.ServiceSyncing')
+    service = autoclass('org.kivy.scionsofasyllion.ServiceSyncing')
     mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
     service.start(mActivity, '')
