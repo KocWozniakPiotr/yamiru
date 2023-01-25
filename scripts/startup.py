@@ -6,6 +6,8 @@ class ConfigManager:
     tutorial = 'empty'
     config = configparser.ConfigParser()
     allow_backup = False
+    allow_notify = True
+    notify_activated = False
 
     def active(self):
         # Creates default_settings.ini if not created yet
@@ -13,9 +15,12 @@ class ConfigManager:
             print('trying to read settings')
             open('../settings.ini', 'r')
             print('success!')
-            # checking if secret exist
             self.config.read('../settings.ini')
             self.tutorial = self.config.get('Startup', 'Tutorial')
+            if (self.config.get('Startup', 'Notifications')) == 'on':
+                self.allow_notify = True
+            else:
+                self.allow_notify = False
             if self.tutorial == 'empty' or self.tutorial == 'started':
                 return False
             self.tutorial = 'finished'
@@ -27,10 +32,10 @@ class ConfigManager:
             new_config.close()
             return False
 
-
-def start_notification_service():
-    from jnius import autoclass
-    ##################################################################
-    service = autoclass('org.kivy.scionsofasyllion.ServiceSyncing')
-    mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
-    service.start(mActivity, '')
+    def start_notification_service(self):
+        if not self.notify_activated:
+            self.notify_activated = True
+            from jnius import autoclass
+            service = autoclass('org.kivy.scionsofasyllion.ServiceSyncing')
+            mActivity = autoclass('org.kivy.android.PythonActivity').mActivity
+            service.start(mActivity, '')
