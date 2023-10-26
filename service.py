@@ -40,7 +40,7 @@ else:
 def server_connected():
     global user_id, msg_storage
     try:
-        _HOST = socket.gethostbyname('asyllion.com')
+        _HOST = socket.gethostbyname('sample.com')
     except socket.error:
         return False
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -54,7 +54,7 @@ def server_connected():
         usr.settimeout(5)
         usr.connect((_HOST, 5005))
         usr.settimeout(None)
-        usr.send('-Cl13NT-G4ME-T0K3N-'.encode())
+        usr.send('your-token'.encode())
         latest_version = usr.recv().decode()
         # add this feature later
         server_version = 111
