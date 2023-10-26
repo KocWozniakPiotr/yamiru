@@ -12,11 +12,11 @@ PythonService.mService.setAutoRestartService(True)
 # Storing temporary ids of messages in array. They are indexed as templates in a dictionary
 msg_storage = []
 msg_template = {0: '',
-                1: 'amongus is watching you...',
+                1: 'npc is watching you...',
                 2: 'hey...',
                 3: 'new update available!',
                 4: 'you have a new message',
-                5: 'L2 lives forever!',
+                5: 'Asyllion lives forever!',
                 6: 'your character returned to village',
                 7: 'resource farming completed',
                 8: 'level up!',
