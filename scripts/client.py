@@ -4,7 +4,7 @@ from scripts.signals import *
 
 
 class ClientConnection:
-    host_name = 'asyllion.com'
+    host_name = 'sample.com'
     _HOST, _PORT = '0.0.0.0', 5005
     client_version = '111'
     usr: socket
