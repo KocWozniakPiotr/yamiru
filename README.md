@@ -1,24 +1,17 @@
-# Yamiru. The mobile turn based MMO game.
+# Yamiru. The mobile MMO game client.
 
 ### current features:
+- custom profile authentication through a PNG binary image backup
 - creation screen 
 - creating account 
 - generating local backup of your profile 
 - restoring your profile from a local backup 
-- authentication 
 - client reconnecting module 
-- banning system 
-- storing sessions 
-- live server notifications
+- live notifications
 
 ### work in progress:
 - user interface 
-- player database
+- client/server player interaction movement
 
-### coming soon:
-- terrain generation
-- item database 
-- monster database 
-- day and night cycle 
-- trading / broker system 
+### upcomming:
 - private chat
